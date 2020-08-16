@@ -1,18 +1,20 @@
 #include <OneWire.h>
 #include "pitches.h"
 
-#define iButtonPin A3      // Линия data ibutton
-#define R_Led 2            // RGB Led
-#define G_Led 3
-#define B_Led 4
-#define ACpinGnd 5         // Земля аналогового компаратора
-#define ACpin 6            // Вход Ain0 аналогового компаратора 0.1В для EM-Marie 
+#define speakerPin 2       // Спикер, он же buzzer, он же beeper
+#define speakerPinGnd 3   // земля Спикера
+#define ACpin5v 4          //5 вольт аналогового компаратора
+#define ACpin 5            // Вход Ain0 аналогового компаратора 0.1В для EM-Marie
+#define ACpinGnd 6         // Земля аналогового компаратора
+//7 пин используется как вход данных с RFID модуля
 #define BtnPin 8           // Кнопка переключения режима чтение/запись
-#define BtnPinGnd 9        // Земля кнопки переключения режима 
-#define speakerPin 10       // Спикер, он же buzzer, он же beeper
+#define BtnPinGnd 9        // Земля кнопки переключения режима
 #define FreqGen 11         // генератор 125 кГц
-#define speakerPinGnd 12   // земля Спикера
-#define blueModePin A2      // Эмулятор ключа rfid
+#define R_Led A2            // RGB Led
+#define G_Led A3
+#define B_Led A4
+#define iButtonPin A5       // Линия data лузы
+
 #define rfidBitRate 2       // Скорость обмена с rfid в kbps
 #define rfidUsePWD 0        // ключ использует пароль для изменения
 #define rfidPWD 123456      // пароль для ключа
@@ -33,10 +35,10 @@ void setup() {
   pinMode(BtnPinGnd, OUTPUT); digitalWrite(BtnPinGnd, LOW); // подключаем второй пин кнопки к земле
   pinMode(speakerPin, OUTPUT);
   pinMode(speakerPinGnd, OUTPUT); digitalWrite(speakerPinGnd, LOW); // подключаем второй пин спикера к земле
+  pinMode(ACpin5v, OUTPUT); digitalWrite(ACpinGnd, HIGH);
   pinMode(ACpin, INPUT);                                            // Вход аналогового компаратора 3В для Cyfral
   pinMode(ACpinGnd, OUTPUT); digitalWrite(ACpinGnd, LOW);           // подключаем второй пин аналогового компаратора Cyfral к земле 
   pinMode(R_Led, OUTPUT); pinMode(G_Led, OUTPUT); pinMode(B_Led, OUTPUT);  //RGB-led
-  digitalWrite(blueModePin, LOW); pinMode(blueModePin, OUTPUT);
   clearLed();
   pinMode(FreqGen, OUTPUT);                               
   digitalWrite(B_Led, HIGH);                                //awaiting of origin key data
@@ -432,7 +434,7 @@ bool T5557_blockRead(byte* buf){
     if (ti == 2)  break;         //timeout
     if ( ( ti == 1 ) && ( i == 0)) {  // если не находим стартовый 0 - это ошибка
       ti=2; 
-      Serial.print("b2 ");
+      //Serial.print("b2 ");
       break;
     }
     if (i > 0){     //начиная с 1-го бита пишем в буфер
@@ -529,7 +531,7 @@ bool write2rfid(){
   }
   emRWType rwType = getRfidRWtype(); // определяем тип T5557 (T5577) или EM4305
   if (rwType != rwUnknown) Serial.print("\n Burning rfid ID: ");
-  //keyID[0] = 0xFF; keyID[1] = 0xA9; keyID[2] =  0x8A; keyID[3] = 0xA4; keyID[4] = 0x87; keyID[5] = 0x78; keyID[6] = 0x98; keyID[7] = 0x6A;
+  //keyID[0] = 0xFF; keyID[1] = 0x96; keyID[2] =  0x20; keyID[3] = 0x02; keyID[4] = 0x64; keyID[5] = 0x68; keyID[6] = 0xE1; keyID[7] =  0xEE;
   switch (rwType){
     case T5557: return write2rfidT5557(keyID); break;                    //пишем T5557
     //case EM4305: return write2rfidEM4305(keyID); break;                  //пишем EM4305
