@@ -217,6 +217,7 @@ bool write2iBtn(){
   }
   emRWType rwType = getRWtype(); // определяем тип RW-1990.1 или 1990.2 или TM-01
   Serial.print("\n Burning iButton ID: ");
+  //keyID[0] = 0xFF; keyID[1] = 0x96; keyID[2] =  0x20; keyID[3] = 0x02; keyID[4] = 0x64; keyID[5] = 0x68; keyID[6] = 0xE1; keyID[7] =  0xEE;
   if (rwType == TM2004) return write2iBtnTM2004();  //шьем TM2004
     else return write2iBtnRW1990_1_2_TM01(rwType); //пробуем прошить другие форматы
 }
